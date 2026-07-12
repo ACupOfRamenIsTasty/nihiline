@@ -116,6 +116,77 @@ var setupStartButton = function () {
   });
 };
 
+// Interactive onboarding that replaces the plain Start button.
+// The player is walked through the three key groups (white D/F/J/K, then red
+// E/R/U/I, then the blue SPACE lane). Completing each group advances the step,
+// and pressing SPACE on the final step fades in the lanes/HUD and starts the
+// game by triggering the existing Start button (no game logic is changed).
+var setupTutorial = function () {
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.tutorial__step'));
+  var stepKeys = [
+    ['d', 'f', 'j', 'k'],
+    ['e', 'r', 'u', 'i'],
+    [' ']
+  ];
+  var current = 0;
+  var started = false;
+  var held = {};
+
+  var normalizeKey = function (key) {
+    return key === ' ' ? ' ' : key.toLowerCase();
+  };
+
+  var showStep = function (index) {
+    steps.forEach(function (step, i) {
+      step.classList.toggle('is-active', i === index);
+    });
+  };
+
+  // Reflect currently held keys on the active step's key caps.
+  var updateKeyVisuals = function () {
+    var keyEls = steps[current].querySelectorAll('.tutorial__key');
+    Array.prototype.forEach.call(keyEls, function (el) {
+      el.classList.toggle('is-held', !!held[el.getAttribute('data-key')]);
+    });
+  };
+
+  var startGame = function () {
+    started = true;
+    document.body.classList.add('is-revealed');
+    document.querySelector('.btn--start').click();
+  };
+
+  document.addEventListener('keydown', function (event) {
+    if (started) {
+      return;
+    }
+
+    var key = normalizeKey(event.key);
+    held[key] = true;
+    updateKeyVisuals();
+
+    if (current < 2) {
+      var allHeld = stepKeys[current].every(function (k) {
+        return held[k];
+      });
+      if (allHeld) {
+        current++;
+        showStep(current);
+      }
+    } else if (key === ' ') {
+      startGame();
+    }
+  });
+
+  document.addEventListener('keyup', function (event) {
+    if (started) {
+      return;
+    }
+    held[normalizeKey(event.key)] = false;
+    updateKeyVisuals();
+  });
+};
+
 var startTimer = function (duration) {
   var timerContainer = document.querySelector('.summary__timer');
   var timerBar = document.querySelector('.summary__timer-bar');
@@ -389,4 +460,5 @@ window.onload = function () {
   setupStartButton();
   setupKeys();
   setupNoteMiss();
+  setupTutorial();
 }

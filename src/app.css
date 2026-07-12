@@ -253,9 +253,109 @@ h2 {
   z-index: 10;
 }
 
+/* The raw start button stays in the DOM for the existing game logic, but the
+   tutorial drives it programmatically, so it is visually hidden. */
 .menu__start {
+  display: none;
+}
+
+/* The score/accuracy HUD and the lanes are hidden until the player finishes
+   the tutorial and presses SPACE, at which point they fade in together. */
+.hud,
+.key-container,
+.track-container {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+body.is-revealed .hud,
+body.is-revealed .key-container,
+body.is-revealed .track-container {
+  opacity: 1;
+}
+
+.menu__tutorial {
   display: flex;
+  align-items: center;
   justify-content: center;
+}
+
+.tutorial__step {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+}
+
+.tutorial__step.is-active {
+  display: flex;
+  animation: tutorialFade 0.5s ease both;
+}
+
+.tutorial__step--white {
+  --accent: #ffffff;
+  color: #ffffff;
+}
+
+.tutorial__step--magenta {
+  --accent: #ff00ff;
+  color: #ff00ff;
+}
+
+.tutorial__step--cyan {
+  --accent: #00ffff;
+  color: #00ffff;
+}
+
+.tutorial__hint {
+  font-size: 1.8rem;
+  font-weight: 500;
+  letter-spacing: 0.3rem;
+  text-transform: uppercase;
+}
+
+.tutorial__keys {
+  display: flex;
+  gap: 1.4rem;
+}
+
+.tutorial__key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.5rem;
+  height: 5.5rem;
+  border: 2px solid var(--accent);
+  border-radius: 1rem;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  transition: all 0.15s ease;
+}
+
+.tutorial__key--space {
+  width: auto;
+  padding: 0 3.5rem;
+  font-size: 1.8rem;
+  letter-spacing: 0.4rem;
+}
+
+.tutorial__key.is-held {
+  background: var(--accent);
+  color: #000000;
+  box-shadow: 0 0 2.5rem var(--accent);
+  transform: translateY(0.3rem) scale(0.96);
+}
+
+@keyframes tutorialFade {
+  from {
+    opacity: 0;
+    transform: translateY(1.2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .summary__timer {
