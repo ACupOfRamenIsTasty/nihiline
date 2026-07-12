@@ -1,4 +1,5 @@
 import { chart } from './chart.js';
+import { showResult } from './results.js';
 
 // Tracks states of keys being held down.
 // White lane keys (d, f, j, k) and the overlapping red lane keys (e, r, u, i).
@@ -15,7 +16,9 @@ var isHolding = {
   ' ': false
 };
 
-var hits = { perfect: 0, good: 0, miss: 0 }; // Count of hits
+// Count of hits. Tainted (good) notes are additionally split by timing:
+// taintedEarly (hit before the perfect time) and taintedLate (hit after it).
+var hits = { perfect: 0, good: 0, miss: 0, taintedEarly: 0, taintedLate: 0 };
 var judgement = { perfect: 0.08, good: 0.16, miss: 0.18 }; // Note judgement times (s)
 var totalNotes = 0; // number of total notes
 var noteValue = 0; // value of each note
@@ -30,6 +33,7 @@ var trackContainer;
 var tracks;
 var keypress;
 var comboText; // Text that indicates combo
+var taintedReminder; // Flashes 'EARLY'/'LATE' above the combo on tainted hits
 var scoreDisplay; // Real-time score in the top-right HUD
 var accuracyDisplay; // Real-time accuracy in the top-right HUD
 
@@ -200,9 +204,10 @@ var startTimer = function (duration) {
       clearInterval(intervalId);
       timerBar.style.width = '100%';
       timerContainer.style.opacity = 0;
-      showResult();
-      comboText.style.transition = 'all 1s';
-      comboText.style.opacity = 0;
+      isPlaying = false;
+      // Hand off to the results module, which fades out the play field
+      // (lanes, HUD, combo) before revealing the summary panel.
+      showResult({ score: score, maxCombo: maxCombo, hits: hits });
       return;
     }
 
@@ -219,7 +224,7 @@ var initializeScore = function () {
   score = 0;
   combo = 0;
   maxCombo = 0;
-  hits = { perfect: 0, good: 0, miss: 0 };
+  hits = { perfect: 0, good: 0, miss: 0, taintedEarly: 0, taintedLate: 0 };
   updateHud();
 };
 
@@ -234,17 +239,6 @@ var updateHud = function () {
 
   scoreDisplay.innerHTML = Math.round(score).toString().padStart(7, '0');
   accuracyDisplay.innerHTML = accuracy.toFixed(2) + '%';
-};
-
-// Shows end screen results
-var showResult = function () {
-  document.querySelector('.perfect__count').innerHTML = hits.perfect;
-  document.querySelector('.good__count').innerHTML = hits.good;
-  document.querySelector('.miss__count').innerHTML = hits.miss;
-  document.querySelector('.combo__count').innerHTML = maxCombo;
-  document.querySelector('.score__count').innerHTML = Math.round(score).toString().padStart(7, '0');
-  document.querySelector('.summary__timer').style.opacity = 0;
-  document.querySelector('.summary__result').style.opacity = 1;
 };
 
 // Handles missed notes
@@ -338,6 +332,15 @@ var judge = function (index) {
 
   var hitJudgement = getHitJudgement(Math.abs(accuracy));
   displayAccuracy(hitJudgement);
+
+  // A tainted (good) hit is either early (before the perfect time, accuracy < 0)
+  // or late (after it, accuracy > 0). Track the split and flash a reminder.
+  if (hitJudgement === 'good') {
+    var timing = accuracy < 0 ? 'early' : 'late';
+    hits[timing === 'early' ? 'taintedEarly' : 'taintedLate']++;
+    showTaintedReminder(timing);
+  }
+
   showHitEffect(index, hitJudgement);
   updateHits(hitJudgement);
   updateCombo(hitJudgement);
@@ -360,6 +363,17 @@ var getHitJudgement = function (accuracy) {
 var displayAccuracy = function (judgement) {
   // If good, display whether late (below hit zone) or early (above hit zone)
   return;
+};
+
+// Briefly flashes a blue 'EARLY' or red 'LATE' reminder above the combo
+// counter when a tainted note is hit. Restarts the animation on rapid
+// consecutive tainted hits using the same reflow trick as the lane flashes.
+var showTaintedReminder = function (timing) {
+  taintedReminder.innerHTML = timing === 'early' ? 'EARLY' : 'LATE';
+  taintedReminder.classList.remove('hit__reminder--early', 'hit__reminder--late', 'hit__reminder--flash');
+  taintedReminder.classList.add(timing === 'early' ? 'hit__reminder--early' : 'hit__reminder--late');
+  void taintedReminder.offsetWidth;
+  taintedReminder.classList.add('hit__reminder--flash');
 };
 
 var showHitEffect = function (index, judgement) {
@@ -452,6 +466,7 @@ window.onload = function () {
     Array.prototype.slice.call(document.querySelectorAll('.keypress--blue'))
   );
   comboText = document.querySelector('.hit__combo');
+  taintedReminder = document.querySelector('.hit__reminder');
   scoreDisplay = document.querySelector('.hud__score');
   accuracyDisplay = document.querySelector('.hud__accuracy');
 

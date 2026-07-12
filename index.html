@@ -35,6 +35,7 @@
     <!-- Play field: four centered lanes -->
     <section class="game" aria-label="Note lanes">
       <div class="hit">
+        <div class="hit__reminder" aria-hidden="true"></div>
         <div class="hit__combo"></div>
         <div class="hit__accuracy"></div>
       </div>
@@ -131,36 +132,9 @@
       </div>
     </div>
 
-    <!-- Results overlay: centered -->
+    <!-- Results overlay: centered. Contents rendered by src/results.js -->
     <div class="summary">
-      <div class="summary__result">
-        <h2 class="result__heading">Results</h2>
-        <div class="result__accuracy perfect">
-          <p class="accuracy__heading">Pristine</p>
-          <span>:</span>
-          <p class="accuracy__count perfect__count"></p>
-        </div>
-        <div class="result__accuracy good">
-          <p class="accuracy__heading">Tainted</p>
-          <span>:</span>
-          <p class="accuracy__count good__count"></p>
-        </div>
-        <div class="result__accuracy miss">
-          <p class="accuracy__heading">Corrupted</p>
-          <span>:</span>
-          <p class="accuracy__count miss__count"></p>
-        </div>
-        <div class="result__accuracy combo">
-          <p class="accuracy__heading">Max Combo</p>
-          <span>:</span>
-          <p class="accuracy__count combo__count"></p>
-        </div>
-        <div class="result__accuracy score">
-          <p class="accuracy__heading">Score</p>
-          <span>:</span>
-          <p class="accuracy__count score__count"></p>
-        </div>
-      </div>
+      <div class="summary__result" role="status" aria-live="polite"></div>
     </div>
   </main>
 

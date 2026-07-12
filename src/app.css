@@ -75,6 +75,49 @@ h2 {
   color: var(--maxcombo-color);
 }
 
+/* Tainted-timing reminder: briefly flashes 'EARLY' (blue) / 'LATE' (red)
+   just above the combo counter. */
+.hit__reminder {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-family: "Saira";
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hit__reminder--early {
+  color: #3b9dff;
+}
+
+.hit__reminder--late {
+  color: var(--miss-color);
+}
+
+.hit__reminder--flash {
+  animation: reminderFlash 0.6s ease-out;
+}
+
+@keyframes reminderFlash {
+  0% {
+    opacity: 1;
+    transform: translateY(0.4rem);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .hit__accuracy {
   position: absolute;
   width: 100%;
@@ -457,43 +500,136 @@ body.is-revealed .track-container {
 
 .result__heading {
   font-size: 5rem;
-  padding: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.4rem;
+  padding: 0 0 2.5rem;
 }
 
-.result__accuracy {
+/* Score: the prominent focal point beneath the title. Centered and bold. */
+.result__score {
   display: flex;
-  font-size: 3rem;
-  padding: 1rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 0 2.5rem;
 }
 
-.accuracy__heading {
-  flex: 0 0 45%;
+.result__score-label {
+  font-size: 1.8rem;
+  letter-spacing: 0.4rem;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.result__score-value {
+  font-size: 6.4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--score-color);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Accuracy + Max Combo: paired, bold, smaller than Score. */
+.result__headline {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  padding: 0 0 2.5rem;
+}
+
+.result__headline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.result__headline-label {
+  font-size: 1.4rem;
+  letter-spacing: 0.3rem;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.result__headline-value {
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--score-color);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Detail categories: bigger than the headline pair, but not bold. Divided
+   by horizontal bars so Tainted + Early/Late read as one group. */
+.result__details {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem;
+}
+
+.result__detail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 1.6rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 3.4rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--score-color);
+}
+
+.result__detail:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.result__label {
   text-align: left;
+  letter-spacing: 0.1rem;
 }
 
-.accuracy__count {
-  flex: 0 0 45%;
+.result__value {
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
-.perfect {
+.result__detail--perfect {
   color: var(--perfect-color);
 }
 
-.good {
+.result__detail--good {
   color: var(--good-color);
 }
 
-.miss {
+.result__detail--miss {
   color: var(--miss-color);
 }
 
-.combo {
-  color: var(--maxcombo-color);
+/* Early/late breakdown grouped beneath the Tainted row (no divider between). */
+.result__sub {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 2.4rem;
+  margin-top: 0.8rem;
+  font-size: 1.6rem;
+  letter-spacing: 0.15rem;
+  text-transform: uppercase;
 }
 
-.score {
-  color: var(--score-color);
+.result__sub-item {
+  display: flex;
+  gap: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.result__sub-item--early {
+  color: #3b9dff;
+}
+
+.result__sub-item--late {
+  color: var(--miss-color);
 }
 
 @keyframes moveDown {
