@@ -6,18 +6,22 @@
 
 :root {
   --background: black;
-  --perfect-color: rgba(255, 150, 255, .8);
-  --good-color: rgba(255, 200, 0, 0.8);
-  --miss-color: rgba(255, 0, 20, 0.8);
-  --maxcombo-color: rgba(255, 255, 255, .8);
-  --score-color: rgba(255, 255, 255, 0.8);
+  --perfect-color: rgba(255, 215, 0);
+  --good-color: rgba(0, 255, 200);
+  --miss-color: rgba(200, 0, 0);
+  --maxcombo-color: rgba(255, 255, 255);
+  --score-color: rgba(255, 255, 255);
   /* --hit-effect: linear-gradient(to bottom, rgba(255, 255, 255, .5), rgba(255, 255, 255, .3)); */
   --hit-color: rgba(255, 255, 255, .8);
   --key-white: rgba(255, 255, 255, 0.1);
-  --key-perfect: rgba(255, 150, 255, 0.25);
-  --key-good: rgba(255, 200, 0, 0.25);
-  --key-miss: rgba(255, 0, 20, 0.25);
+  --key-perfect: rgba(255, 215, 0, 0.5);
+  --key-good: rgba(0, 255, 200, 0.5);
+  --key-miss: rgba(200, 0, 0, 0.5);
   --keypress-white: linear-gradient(to top, rgba(255, 255, 255, .6), rgba(255, 255, 255, 0));
+  --key-red: rgba(255, 0, 255, 0.1);
+  --keypress-red: linear-gradient(to top, rgba(255, 0, 255, .6), rgba(255, 0, 255, 0));
+  --key-blue: rgba(0, 255, 255, 0.1);
+  --keypress-blue: linear-gradient(to top, rgba(0, 255, 255, .6), rgba(0, 255, 255, 0));
 }
 
 html {
@@ -97,20 +101,27 @@ h2 {
 }
 
 .track-container {
-  display: flex;
+  position: relative;
   flex: 1 0 auto;
 }
 
+/* Tracks are absolutely positioned so that the 4 red lanes can fully overlap
+   the 4 white lanes. Each track's column (left/width) is set inline in JS. */
 .track {
-  position: relative;
-  flex: 1 1 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
 }
 
-.track:not(:last-child) {
+/* Only the white tracks draw the column separators; red tracks sit transparently
+   on top so both white and red notes remain visible. */
+.track--white {
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .key-container {
+  position: relative;
   display: flex;
   flex: 0 0 15%;
 }
@@ -191,6 +202,41 @@ h2 {
 
 .keypress--white {
   background-image: var(--keypress-white);
+}
+
+.keypress--red {
+  background-image: var(--keypress-red);
+}
+
+.keypress--blue {
+  background-image: var(--keypress-blue);
+}
+
+/* Wide centered blue lane key: overlaps the middle two columns and stays
+   transparent so the columns beneath it remain fully visible. */
+.key--blue {
+  position: absolute;
+  left: 25%;
+  width: 50%;
+  top: 0;
+  bottom: 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.key--blue-label {
+  position: absolute;
+  bottom: .5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+  font-weight: bold;
+  letter-spacing: .1rem;
+  color: #00FFFF;
+}
+
+.key--blue-flash {
+  animation: keyFlashBlue 0.25s ease-out;
 }
 
 .menu {
@@ -432,6 +478,17 @@ h2 {
   }
   100% {
     background: var(--key-white);
+  }
+}
+
+/* The blue lane flash fades back to transparent so it never masks the columns
+   underneath it. */
+@keyframes keyFlashBlue {
+  0% {
+    background: var(--flash-color, var(--hit-color));
+  }
+  100% {
+    background: transparent;
   }
 }
 

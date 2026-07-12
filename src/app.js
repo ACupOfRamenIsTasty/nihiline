@@ -1,11 +1,18 @@
 import { chart } from './chart.js';
 
-// Tracks states of keys being held down
+// Tracks states of keys being held down.
+// White lane keys (d, f, j, k) and the overlapping red lane keys (e, r, u, i).
 var isHolding = {
   d: false,
   f: false,
   j: false,
-  k: false
+  k: false,
+  e: false,
+  r: false,
+  u: false,
+  i: false,
+  // Wide centered blue lane key (index 8).
+  ' ': false
 };
 
 var hits = { perfect: 0, good: 0, miss: 0 }; // Count of hits
@@ -43,6 +50,21 @@ var initializeNotes = function () {
   chart.sheet.forEach(function (key, index) {
     trackElement = document.createElement('div');
     trackElement.classList.add('track');
+
+    if (index === 8) {
+      // The blue lane is a single wide lane, twice the width of a normal lane,
+      // centered over the middle two columns.
+      trackElement.classList.add('track--blue');
+      trackElement.style.left = '25%';
+      trackElement.style.width = '50%';
+    } else {
+      // Each of the 8 keyed lanes maps onto one of 4 visible columns.
+      // Indices 0-3 are the white lanes; 4-7 are the red lanes that overlap them.
+      var lane = index % 4;
+      trackElement.classList.add(index < 4 ? 'track--white' : 'track--red');
+      trackElement.style.left = (lane * 25) + '%';
+      trackElement.style.width = '25%';
+    }
 
     key.notes.forEach(function (note) {
       noteElement = document.createElement('div');
@@ -178,6 +200,11 @@ var setupNoteMiss = function () {
  */
 var setupKeys = function () {
   document.addEventListener('keydown', function (event) {
+    // Stop the spacebar from scrolling the page or re-triggering a focused button.
+    if (event.key === ' ') {
+      event.preventDefault();
+    }
+
     var keyIndex = getKeyIndex(event.key);
 
     if (Object.keys(isHolding).indexOf(event.key) !== -1
@@ -200,7 +227,8 @@ var setupKeys = function () {
   });
 };
 
-// Map input key to lane
+// Map input key to lane index.
+// White lanes: d=0, f=1, j=2, k=3. Red lanes: e=4, r=5, u=6, i=7. Blue lane: space=8.
 var getKeyIndex = function (key) {
   if (key === 'd') {
     return 0;
@@ -210,6 +238,16 @@ var getKeyIndex = function (key) {
     return 2;
   } else if (key === 'k') {
     return 3;
+  } else if (key === 'e') {
+    return 4;
+  } else if (key === 'r') {
+    return 5;
+  } else if (key === 'u') {
+    return 6;
+  } else if (key === 'i') {
+    return 7;
+  } else if (key === ' ') {
+    return 8;
   }
 };
 
@@ -254,10 +292,23 @@ var displayAccuracy = function (judgement) {
 };
 
 var showHitEffect = function (index, judgement) {
-  var key = document.querySelectorAll('.key')[index];
   var flashColor = judgement === 'perfect' ? 'var(--key-perfect)'
     : judgement === 'good' ? 'var(--key-good)'
     : 'var(--key-miss)';
+
+  // The blue lane (index 8) flashes its own centered wide key overlay, which
+  // fades back to transparent so it doesn't cover the columns underneath.
+  if (index === 8) {
+    var blueKey = document.querySelector('.key--blue');
+    blueKey.style.setProperty('--flash-color', flashColor);
+    blueKey.classList.remove('key--blue-flash');
+    void blueKey.offsetWidth;
+    blueKey.classList.add('key--blue-flash');
+    return;
+  }
+
+  // Red lanes (4-7) share a visible key box with the white lane in the same column.
+  var key = document.querySelectorAll('.key')[index % 4];
 
   key.style.setProperty('--flash-color', flashColor);
 
@@ -321,7 +372,14 @@ var updateNext = function (index) {
 
 window.onload = function () {
   trackContainer = document.querySelector('.track-container');
-  keypress = document.querySelectorAll('.keypress');
+  // Build the keypress lookup in lane-index order: white overlays (0-3),
+  // then red overlays (4-7), then the wide centered blue overlay (8), so
+  // keypress[keyIndex] lights the right one.
+  keypress = [].concat(
+    Array.prototype.slice.call(document.querySelectorAll('.keypress--white')),
+    Array.prototype.slice.call(document.querySelectorAll('.keypress--red')),
+    Array.prototype.slice.call(document.querySelectorAll('.keypress--blue'))
+  );
   comboText = document.querySelector('.hit__combo');
   scoreDisplay = document.querySelector('.hud__score');
   accuracyDisplay = document.querySelector('.hud__accuracy');

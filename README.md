@@ -3,6 +3,7 @@
 A rhythm game with:
 - nihil -> No
 - line -> Hold notes
+(and nine keys.)
 
 Credit: [Chloe Liang](https://chloeliang.github.io/rhythm-game/)
 
