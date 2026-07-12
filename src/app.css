@@ -13,10 +13,10 @@
   --score-color: rgba(255, 255, 255, 0.8);
   /* --hit-effect: linear-gradient(to bottom, rgba(255, 255, 255, .5), rgba(255, 255, 255, .3)); */
   --hit-color: rgba(255, 255, 255, .8);
-  --key-white: rgba(255, 255, 255, 1);
-  --key-perfect: rgba(255, 150, 255, 1);
-  --key-good: rgba(255, 200, 0, 1);
-  --key-miss: rgba(255, 0, 20, 1);
+  --key-white: rgba(255, 255, 255, 0.1);
+  --key-perfect: rgba(255, 150, 255, 0.25);
+  --key-good: rgba(255, 200, 0, 0.25);
+  --key-miss: rgba(255, 0, 20, 0.25);
   --keypress-white: linear-gradient(to top, rgba(255, 255, 255, .6), rgba(255, 255, 255, 0));
 }
 
