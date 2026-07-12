@@ -14,8 +14,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap"
     rel="stylesheet" />
   <title>nihiline</title>
-  <script type="module" crossorigin src="./assets/index-B95fOeRY.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DF5cmvNP.css">
+  <script type="module" crossorigin src="./assets/index-CoY33yBw.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-ARVqbflS.css">
 </head>
 
 <body>
@@ -92,8 +92,41 @@
       </div>
     </section>
 
-    <!-- Start overlay: centered -->
+    <!-- Start overlay: centered interactive tutorial -->
     <div class="menu">
+      <div class="menu__tutorial">
+        <!-- Step 1: white lane keys -->
+        <div class="tutorial__step tutorial__step--white is-active" data-step="0">
+          <p class="tutorial__hint">Simultaneously hold down</p>
+          <div class="tutorial__keys">
+            <span class="tutorial__key" data-key="d">D</span>
+            <span class="tutorial__key" data-key="f">F</span>
+            <span class="tutorial__key" data-key="j">J</span>
+            <span class="tutorial__key" data-key="k">K</span>
+          </div>
+        </div>
+
+        <!-- Step 2: red lane keys -->
+        <div class="tutorial__step tutorial__step--magenta" data-step="1">
+          <p class="tutorial__hint">Now hold down</p>
+          <div class="tutorial__keys">
+            <span class="tutorial__key" data-key="e">E</span>
+            <span class="tutorial__key" data-key="r">R</span>
+            <span class="tutorial__key" data-key="u">U</span>
+            <span class="tutorial__key" data-key="i">I</span>
+          </div>
+        </div>
+
+        <!-- Step 3: blue lane key / start -->
+        <div class="tutorial__step tutorial__step--cyan" data-step="2">
+          <p class="tutorial__hint">Press start</p>
+          <div class="tutorial__keys">
+            <span class="tutorial__key tutorial__key--space" data-key=" ">SPACE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Retained for game logic; triggered programmatically by the tutorial -->
       <div class="menu__start">
         <a class="btn btn--primary btn--start" href="#">Start</a>
       </div>
