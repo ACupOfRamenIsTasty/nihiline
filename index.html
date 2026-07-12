@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta property="og:title" content="Rhythm" />
+  <meta property="og:description"
+    content="A vertical scrolling rhythm game where you have to hit the notes falling down, which will appear according to the music." />
+  <meta property="og:url" content="https://acupoframen.github.io/nihiline/" />
+  <meta property="og:image" content="/logo.png" />
+  <link rel="shortcut icon" type="image/png" href="/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="src/app.css" />
+  <title>nihiline</title>
+</head>
+
+<body>
+  <audio class="chart" src="/music.mp3"></audio>
+
+  <!-- Progress timer: fixed to the very top, grows left to right -->
+  <div class="summary__timer" role="progressbar" aria-label="Chart progress">
+    <div class="summary__timer-bar"></div>
+  </div>
+
+  <!-- Real-time score and accuracy: top-right corner -->
+  <div class="hud" aria-label="Live score and accuracy">
+    <div class="hud__score" aria-label="Score">0000000</div>
+    <div class="hud__accuracy" aria-label="Accuracy">100.00%</div>
+  </div>
+
+  <main>
+    <!-- Play field: four centered lanes -->
+    <section class="game" aria-label="Note lanes">
+      <div class="hit">
+        <div class="hit__combo"></div>
+        <div class="hit__accuracy"></div>
+      </div>
+
+      <div class="track-container"></div>
+
+      <div class="key-container">
+        <div class="key key--d key--white">
+          <div class="keypress keypress--white"></div>
+          <span>D</span>
+        </div>
+        <div class="key key--f key--white">
+          <div class="keypress keypress--white"></div>
+          <span>F</span>
+        </div>
+        <div class="key key--j key--white">
+          <div class="keypress keypress--white"></div>
+          <span>J</span>
+        </div>
+        <div class="key key--k key--white">
+          <div class="keypress keypress--white"></div>
+          <span>K</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Start overlay: centered -->
+    <div class="menu">
+      <div class="menu__start">
+        <a class="btn btn--primary btn--start" href="#">Start</a>
+      </div>
+    </div>
+
+    <!-- Results overlay: centered -->
+    <div class="summary">
+      <div class="summary__result">
+        <h2 class="result__heading">Results</h2>
+        <div class="result__accuracy perfect">
+          <p class="accuracy__heading">Pristine</p>
+          <span>:</span>
+          <p class="accuracy__count perfect__count"></p>
+        </div>
+        <div class="result__accuracy good">
+          <p class="accuracy__heading">Tainted</p>
+          <span>:</span>
+          <p class="accuracy__count good__count"></p>
+        </div>
+        <div class="result__accuracy miss">
+          <p class="accuracy__heading">Corrupted</p>
+          <span>:</span>
+          <p class="accuracy__count miss__count"></p>
+        </div>
+        <div class="result__accuracy combo">
+          <p class="accuracy__heading">Max Combo</p>
+          <span>:</span>
+          <p class="accuracy__count combo__count"></p>
+        </div>
+        <div class="result__accuracy score">
+          <p class="accuracy__heading">Score</p>
+          <span>:</span>
+          <p class="accuracy__count score__count"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="src/chart.js"></script>
+  <script type="module" src="src/app.js"></script>
+</body>
+
+</html>
