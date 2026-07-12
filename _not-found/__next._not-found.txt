@@ -1,5 +1,0 @@
-1:"$Sreact.fragment"
-2:I[39756,["/nihiline/_next/static/chunks/110fub1j_xb24.js","/nihiline/_next/static/chunks/0dbhjjzl8qfwv.js","/nihiline/_next/static/chunks/140cw3jqi_brq.js"],"default"]
-3:I[37457,["/nihiline/_next/static/chunks/110fub1j_xb24.js","/nihiline/_next/static/chunks/0dbhjjzl8qfwv.js","/nihiline/_next/static/chunks/140cw3jqi_brq.js"],"default"]
-4:[]
-0:{"rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"isPartial":false,"staleTime":300,"varyParams":"$W4","buildId":"wtp6C1z4MLw8VnBrtMiBY"}
