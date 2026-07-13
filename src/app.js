@@ -233,10 +233,13 @@ var initializeScore = function () {
 var updateHud = function () {
   var judged = hits.perfect + hits.good + hits.miss;
   var accuracy = judged === 0
-    ? 100
+    ? 0
     : (hits.perfect * 100 + hits.good * 65) / judged;
+  var totalAccuracy = judged === 0
+    ? 0
+    : (hits.perfect * 100 + hits.good * 65) / totalNotes;
 
-  score = 900000 * accuracy / 100 + 100000 * (maxCombo / totalNotes);
+  score = 900000 * totalAccuracy / 100 + 100000 * (maxCombo / totalNotes);
 
   scoreDisplay.innerHTML = Math.round(score).toString().padStart(7, '0');
   accuracyDisplay.innerHTML = accuracy.toFixed(2) + '%';

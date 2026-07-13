@@ -28,20 +28,20 @@ var getGrade = function (hits) {
   if (hits.good === 0 && hits.miss === 0) {
     return GRADES.pristine;
   }
-  if (hits.miss === 0) {
+  else if (hits.miss === 0) {
     return GRADES.fullCombo;
   }
-  return GRADES.complete;
+  else return GRADES.complete;
 };
 
-// Accuracy grades hit notes: pristine = 100%, tainted = 50%, corrupted = 0%.
+// Accuracy grades hit notes: pristine = 100%, tainted = 65%, corrupted = 0%.
 // Matches the live HUD calculation in app.js.
 var computeAccuracy = function (hits) {
   var judged = hits.perfect + hits.good + hits.miss;
   if (judged === 0) {
     return 100;
   }
-  return (hits.perfect * 100 + hits.good * 50) / judged;
+  return (hits.perfect * 100 + hits.good * 65) / judged;
 };
 
 // Builds one detail line: "label : value". `modifier` colors the row via a
