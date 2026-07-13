@@ -130,6 +130,53 @@
       <div class="menu__start">
         <button class="btn btn--primary btn--start" type="button">Start</button>
       </div>
+
+      <!-- Opens the per-device audio calibration overlay -->
+      <button class="btn btn--calibrate" type="button">Calibrate Audio</button>
+    </div>
+
+    <!-- Audio calibration overlay: tap test + manual offset slider -->
+    <div class="calibration" aria-hidden="true">
+      <div class="calibration__panel" role="dialog" aria-modal="true" aria-label="Audio calibration">
+        <h2 class="calibration__title">Audio Calibration</h2>
+        <p class="calibration__desc">
+          If notes feel out of sync with the music on this device, calibrate here.
+          Play the tap test to detect your latency automatically, or set the offset by hand.
+        </p>
+
+        <div class="calibration__section">
+          <div class="calibration__pulse" aria-hidden="true"></div>
+          <p class="calibration__tap-hint">Tap <span class="calibration__kbd">SPACE</span> on every beat</p>
+          <div class="calibration__stats">
+            <div class="calibration__stat">
+              <span class="calibration__stat-value" data-taps>0</span>
+              <span class="calibration__stat-label">Taps</span>
+            </div>
+            <div class="calibration__stat">
+              <span class="calibration__stat-value" data-detected>--</span>
+              <span class="calibration__stat-label">Detected</span>
+            </div>
+          </div>
+          <div class="calibration__actions">
+            <button class="btn btn--metronome" type="button">Start Test</button>
+            <button class="btn btn--apply" type="button" disabled>Apply Detected</button>
+          </div>
+        </div>
+
+        <div class="calibration__section">
+          <label class="calibration__slider-label" for="offset-slider">Manual offset</label>
+          <input id="offset-slider" class="calibration__slider" type="range" min="-300" max="300" step="1"
+            value="0" />
+          <div class="calibration__readout"><span data-offset>0 ms</span></div>
+          <p class="calibration__slider-hint">Higher values judge later — use them if the audio plays late on this
+            device.</p>
+        </div>
+
+        <div class="calibration__footer">
+          <button class="btn btn--reset" type="button">Reset</button>
+          <button class="btn btn--primary btn--done" type="button">Done</button>
+        </div>
+      </div>
     </div>
 
     <!-- Results overlay: centered. Contents rendered by src/results.js -->

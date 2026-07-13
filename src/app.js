@@ -1,5 +1,6 @@
 import { chart } from './chart.js';
 import { showResult } from './results.js';
+import { getAudioOffsetSeconds, setupCalibration } from './calibration.js';
 
 // Tracks states of keys being held down.
 // White lane keys (d, f, j, k) and the overlapping red lane keys (e, r, u, i).
@@ -47,6 +48,12 @@ var initializeNotes = function () {
   var noteElement;
   var trackElement;
 
+  // Per-device calibration, read fresh so the latest offset is baked into the
+  // animation delays each time the chart is (re)built. The judge() function
+  // shifts its "perfect" moment by the same amount, so visuals and scoring
+  // stay in lockstep.
+  var audioOffset = getAudioOffsetSeconds();
+
   while (trackContainer.hasChildNodes()) {
     trackContainer.removeChild(trackContainer.lastChild);
   }
@@ -78,7 +85,9 @@ var initializeNotes = function () {
 
       var noteSpeed = typeof note.speed === 'number' && note.speed > 0 ? 4*note.speed : 4;
       var travelDuration = defaultNoteDuration / noteSpeed;
-      var startDelay = getNoteDelayInSeconds(note) + defaultNoteDuration - travelDuration;
+      // Shift the whole note timeline by the calibration offset. Clamp at 0 so a
+      // negative offset can never produce a negative CSS animation-delay.
+      var startDelay = Math.max(0, getNoteDelayInSeconds(note) + defaultNoteDuration - travelDuration + audioOffset);
 
       noteElement.style.animationName = animation + ', linger';
       noteElement.style.animationTimingFunction = 'linear, linear';
@@ -96,6 +105,9 @@ var initializeNotes = function () {
 var setupStartButton = function () {
   var startButton = document.querySelector('.btn--start');
   startButton.addEventListener('click', function () {
+    // Rebuild the notes so the current calibration offset is baked into their
+    // animation delays (the player may have changed it after page load).
+    initializeNotes();
     initializeScore();
     isPlaying = true;
     startTime = Date.now();
@@ -324,7 +336,10 @@ var judge = function (index) {
   var timeInSecond = (Date.now() - startTime) / 1000;
   var nextNoteIndex = chart.sheet[index].next;
   var nextNote = chart.sheet[index].notes[nextNoteIndex];
-  var perfectTime = defaultNoteDuration + getNoteDelayInSeconds(nextNote);
+  // Same calibration offset applied to the note animations (initializeNotes),
+  // so the expected "perfect" press moment matches when the note visually lands
+  // and when the audio is actually heard on this device.
+  var perfectTime = defaultNoteDuration + getNoteDelayInSeconds(nextNote) + getAudioOffsetSeconds();
 
   var accuracy = timeInSecond - perfectTime;
   var hitJudgement;
@@ -476,4 +491,5 @@ window.onload = function () {
   setupKeys();
   setupNoteMiss();
   setupTutorial();
+  setupCalibration();
 }

@@ -731,3 +731,236 @@ body.is-revealed .track-container {
 .key--flash {
   animation: keyFlash 0.25s ease-out;
 }
+
+/* --------------------------------------------------------------------------
+   Audio calibration
+   -------------------------------------------------------------------------- */
+
+/* "Calibrate Audio" entry point, anchored at the bottom of the start menu. */
+.btn--calibrate {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 0.8rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: "Saira";
+  font-size: 1.4rem;
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn--calibrate:hover {
+  color: white;
+  border-color: white;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Overlay + centered panel */
+.calibration {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.82);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.calibration.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.calibration__panel {
+  width: min(90vw, 44rem);
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 1.4rem;
+  background: #050505;
+  color: white;
+  text-align: center;
+}
+
+.calibration__title {
+  padding: 0;
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: 0.3rem;
+}
+
+.calibration__desc {
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.calibration__section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Visual beat indicator, pulses in time with the metronome clicks. */
+.calibration__pulse {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  border: 2px solid var(--good-color);
+  background: transparent;
+  transition: none;
+}
+
+.calibration__pulse.is-beat {
+  animation: calibPulse 0.35s ease-out;
+}
+
+@keyframes calibPulse {
+  0% {
+    background: var(--good-color);
+    box-shadow: 0 0 2.5rem var(--good-color);
+    transform: scale(1.12);
+  }
+  100% {
+    background: transparent;
+    box-shadow: 0 0 0 transparent;
+    transform: scale(1);
+  }
+}
+
+.calibration__tap-hint {
+  font-size: 1.5rem;
+  letter-spacing: 0.1rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.calibration__kbd {
+  display: inline-block;
+  padding: 0.2rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.2rem;
+}
+
+.calibration__stats {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+}
+
+.calibration__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.calibration__stat-value {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.calibration__stat-label {
+  font-size: 1.2rem;
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.calibration__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.calibration__slider-label {
+  font-size: 1.3rem;
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.calibration__slider {
+  width: 100%;
+  accent-color: var(--good-color);
+  cursor: pointer;
+}
+
+.calibration__readout {
+  font-size: 2.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.calibration__slider-hint {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.calibration__footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* Shared button look inside the calibration panel (the base .btn rules only
+   target anchors, so buttons need their own styling). */
+.calibration .btn {
+  padding: 1rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 0.8rem;
+  background: transparent;
+  color: white;
+  font-family: "Saira";
+  font-size: 1.4rem;
+  letter-spacing: 0.15rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calibration .btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
+}
+
+.calibration .btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.calibration .btn--metronome.is-active {
+  border-color: var(--miss-color);
+  color: #ff6b6b;
+}
+
+.calibration .btn--primary {
+  border-color: white;
+  background: white;
+  color: black;
+}
+
+.calibration .btn--primary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.85);
+}
