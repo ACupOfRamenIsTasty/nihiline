@@ -220,7 +220,6 @@ var initializeScore = function () {
   totalNotes = chart.sheet.reduce(function (count, track) {
     return count + track.notes.length;
   }, 0);
-  noteValue = 1000000 / totalNotes;
   score = 0;
   combo = 0;
   maxCombo = 0;
@@ -229,13 +228,15 @@ var initializeScore = function () {
 };
 
 // Updates the top-right real-time score and accuracy displays.
-// Score mirrors the result screen figure (7 digits, zero-padded).
-// Accuracy grades hit notes: perfect = 100%, good = 50%, miss = 0%.
+// Score = 900000 * accuracy + 100000 * (max combo / note count)
+// Accuracy grades hit notes: perfect = 100%, good = 65%, miss = 0%.
 var updateHud = function () {
   var judged = hits.perfect + hits.good + hits.miss;
   var accuracy = judged === 0
     ? 100
-    : (hits.perfect * 100 + hits.good * 50) / judged;
+    : (hits.perfect * 100 + hits.good * 65) / judged;
+
+  score = 900000 * accuracy / 100 + 100000 * (maxCombo / totalNotes);
 
   scoreDisplay.innerHTML = Math.round(score).toString().padStart(7, '0');
   accuracyDisplay.innerHTML = accuracy.toFixed(2) + '%';
@@ -438,11 +439,7 @@ var updateComboIndicator = function () {
 };
 
 var calculateScore = function (judgement) {
-  if (judgement === 'miss') {
-    return;
-  }
-
-  score += noteValue * (judgement === 'perfect' ? 1 : 0.5);
+  // Score is now calculated dynamically in updateHud()
   updateHud();
 };
 
