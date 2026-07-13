@@ -1,11 +1,13 @@
 # nihiline
 
-A rhythm game with:
+A hellish rhythm game prototype with:
 - nihil -> No
 - line -> Hold notes
 (and nine keys.)
 
 Credit: [Chloe Liang](https://chloeliang.github.io/rhythm-game/)
+
+![Preview](public/preview.png "Game Preview")
 
 ## Requirements
 
