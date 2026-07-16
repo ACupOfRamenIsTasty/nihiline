@@ -21,27 +21,31 @@ var FADE_OUT_MS = 1000;
 var GRADES = {
   pristine: { text: 'ALL PRISTINE', color: 'var(--perfect-color)' },
   fullCombo: { text: 'FULL COMBO', color: 'var(--good-color)' },
-  complete: { text: 'COMPLETE', color: 'var(--score-color)' }
+  complete: { text: 'COMPLETE', color: 'var(--score-color)' },
+  failed: { text: 'FAILED', color: 'var(--miss-color' }
 };
 
 var getGrade = function (hits) {
   if (hits.good === 0 && hits.miss === 0) {
     return GRADES.pristine;
   }
-  if (hits.miss === 0) {
+  else if (hits.miss === 0) {
     return GRADES.fullCombo;
   }
-  return GRADES.complete;
+  else if (computeAccuracy(hits) < 70) {
+    return GRADES.failed;
+  }
+  else return GRADES.complete;
 };
 
-// Accuracy grades hit notes: pristine = 100%, tainted = 50%, corrupted = 0%.
+// Accuracy grades hit notes: pristine = 100%, tainted = 65%, corrupted = 0%.
 // Matches the live HUD calculation in app.js.
 var computeAccuracy = function (hits) {
   var judged = hits.perfect + hits.good + hits.miss;
   if (judged === 0) {
     return 100;
   }
-  return (hits.perfect * 100 + hits.good * 50) / judged;
+  return (hits.perfect * 100 + hits.good * 65) / judged;
 };
 
 // Builds one detail line: "label : value". `modifier` colors the row via a
@@ -80,7 +84,7 @@ var render = function (panel, stats) {
   //   1. Grade heading  (most prominent)
   //   2. Score          (centered, bold, largest number)
   //   3. Accuracy + Max Combo  (paired, bold, medium)
-  //   4. Perfect / Tainted (+early/late) / Corrupted  (divided detail rows)
+  //   4. Pristine / Tainted (+early/late) / Corrupted  (divided detail rows)
   panel.innerHTML =
     '<h2 class="result__heading" style="color: ' + grade.color + '">' + grade.text + '</h2>' +
     '<div class="result__score">' +
@@ -98,7 +102,7 @@ var render = function (panel, stats) {
       '</div>' +
     '</div>' +
     '<dl class="result__details">' +
-      buildDetail('Perfect', hits.perfect, 'perfect') +
+      buildDetail('Pristine', hits.perfect, 'perfect') +
       buildDetail('Tainted', hits.good, 'good', buildTaintedSub(hits)) +
       buildDetail('Corrupted', hits.miss, 'miss') +
     '</dl>';

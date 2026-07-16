@@ -93,30 +93,43 @@ var initializeNotes = function () {
   });
 };
 
+var startChartAudio = function () {
+  var audio = document.querySelector('.chart');
+
+  if (!audio) {
+    return;
+  }
+
+  // Wait for preRollMs before playing the chart, starting from the moment the
+  // player begins the run so the audio is not held back by the reveal fade.
+  if (chart.preRollMs && chart.preRollMs > 0) {
+    audio.currentTime = 0;
+    window.setTimeout(function () {
+      audio.play();
+    }, chart.preRollMs);
+  } else {
+    audio.play();
+  }
+};
+
+var startGame = function () {
+  initializeScore();
+  isPlaying = true;
+  startTime = Date.now();
+
+  startTimer(chart.duration);
+  document.querySelector('.menu').style.opacity = 0;
+  startChartAudio();
+
+  document.querySelectorAll('.note').forEach(function (note) {
+    note.style.animationPlayState = 'running, running';
+  });
+};
+
 var setupStartButton = function () {
   var startButton = document.querySelector('.btn--start');
   startButton.addEventListener('click', function () {
-    initializeScore();
-    isPlaying = true;
-    startTime = Date.now();
-
-    startTimer(chart.duration);
-    document.querySelector('.menu').style.opacity = 0;
-
-    // Wait for preRollMs before playing the chart
-    var audio = document.querySelector('.chart');
-    if (chart.preRollMs && chart.preRollMs > 0) {
-      audio.currentTime = 0;
-      window.setTimeout(function () {
-        audio.play();
-      }, chart.preRollMs);
-    } else {
-      audio.play();
-    }
-
-    document.querySelectorAll('.note').forEach(function (note) {
-      note.style.animationPlayState = 'running, running';
-    });
+    startGame();
   });
 };
 
@@ -154,10 +167,10 @@ var setupTutorial = function () {
     });
   };
 
-  var startGame = function () {
+  var beginTutorialGame = function () {
     started = true;
     document.body.classList.add('is-revealed');
-    document.querySelector('.btn--start').click();
+    startGame();
   };
 
   document.addEventListener('keydown', function (event) {
@@ -178,7 +191,7 @@ var setupTutorial = function () {
         showStep(current);
       }
     } else if (key === ' ') {
-      startGame();
+      beginTutorialGame();
     }
   });
 
@@ -220,7 +233,6 @@ var initializeScore = function () {
   totalNotes = chart.sheet.reduce(function (count, track) {
     return count + track.notes.length;
   }, 0);
-  noteValue = 1000000 / totalNotes;
   score = 0;
   combo = 0;
   maxCombo = 0;
@@ -229,13 +241,18 @@ var initializeScore = function () {
 };
 
 // Updates the top-right real-time score and accuracy displays.
-// Score mirrors the result screen figure (7 digits, zero-padded).
-// Accuracy grades hit notes: perfect = 100%, good = 50%, miss = 0%.
+// Score = 900000 * accuracy + 100000 * (max combo / note count)
+// Accuracy grades hit notes: perfect = 100%, good = 65%, miss = 0%.
 var updateHud = function () {
   var judged = hits.perfect + hits.good + hits.miss;
   var accuracy = judged === 0
-    ? 100
-    : (hits.perfect * 100 + hits.good * 50) / judged;
+    ? 0
+    : (hits.perfect * 100 + hits.good * 65) / judged;
+  var totalAccuracy = judged === 0
+    ? 0
+    : (hits.perfect * 100 + hits.good * 65) / totalNotes;
+
+  score = 900000 * totalAccuracy / 100 + 100000 * (maxCombo / totalNotes);
 
   scoreDisplay.innerHTML = Math.round(score).toString().padStart(7, '0');
   accuracyDisplay.innerHTML = accuracy.toFixed(2) + '%';
@@ -435,14 +452,17 @@ var updateComboIndicator = function () {
   } else {
     comboText.style.color = 'white';
   }
+
+  // If combo is less than 3, hide it
+  if (combo >= 2) {
+    comboText.style.display = 'block';
+  } else {
+    comboText.style.display = 'none';
+  }
 };
 
 var calculateScore = function (judgement) {
-  if (judgement === 'miss') {
-    return;
-  }
-
-  score += noteValue * (judgement === 'perfect' ? 1 : 0.5);
+  // Score is now calculated dynamically in updateHud()
   updateHud();
 };
 

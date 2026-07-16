@@ -8,7 +8,7 @@
   --background: black;
   --perfect-color: rgba(255, 215, 0);
   --good-color: rgba(0, 255, 200);
-  --miss-color: rgba(200, 0, 0);
+  --miss-color: rgba(150, 0, 0);
   --maxcombo-color: rgba(255, 255, 255);
   --score-color: rgba(255, 255, 255);
   /* --hit-effect: linear-gradient(to bottom, rgba(255, 255, 255, .5), rgba(255, 255, 255, .3)); */
@@ -93,11 +93,11 @@ h2 {
 }
 
 .hit__reminder--early {
-  color: #3b9dff;
+  color: #0099ff;
 }
 
 .hit__reminder--late {
-  color: var(--miss-color);
+  color: #ff0000;
 }
 
 .hit__reminder--flash {
@@ -625,11 +625,11 @@ body.is-revealed .track-container {
 }
 
 .result__sub-item--early {
-  color: #3b9dff;
+  color: #0099ff;
 }
 
 .result__sub-item--late {
-  color: var(--miss-color);
+  color: #ff0000;
 }
 
 @keyframes moveDown {
